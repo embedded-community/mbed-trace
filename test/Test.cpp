@@ -229,16 +229,18 @@ TEST(trace, active_level_all_ipv6)
 TEST(trace, config_change)
 {
     mbed_trace_config_set(TRACE_MODE_COLOR|TRACE_ACTIVE_LEVEL_ALL);
-    CHECK(mbed_trace_config_get() == TRACE_MODE_COLOR|TRACE_ACTIVE_LEVEL_ALL);
+    CHECK(mbed_trace_config_get() == (TRACE_MODE_COLOR|TRACE_ACTIVE_LEVEL_ALL));
     mbed_trace_config_set(TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_NONE);
-    CHECK(mbed_trace_config_get() == TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_NONE);
+    CHECK(mbed_trace_config_get() == (TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_NONE));
     mbed_trace_config_set(TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_ALL);
-    CHECK(mbed_trace_config_get() == TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_ALL);
+    CHECK(mbed_trace_config_get() == (TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_ALL));
 }
 
 TEST(trace, active_level_all_color)
 {
   mbed_trace_config_set(TRACE_MODE_COLOR|TRACE_ACTIVE_LEVEL_ALL);
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "Begin");
+  STRCMP_EQUAL("\x1b[90m[SILL][mygr]: Begin\x1b[0m", buf);
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hello");
   STRCMP_EQUAL("\x1b[90m[DBG ][mygr]: hello\x1b[0m", buf);
   mbed_tracef(TRACE_LEVEL_INFO, "mygr", "to one");
@@ -247,6 +249,8 @@ TEST(trace, active_level_all_color)
   STRCMP_EQUAL("\x1b[33m[WARN][mygr]: and all\x1b[0m", buf);
   mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "even you");
   STRCMP_EQUAL("\x1b[31m[ERR ][mygr]: even you\x1b[0m", buf);
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "and you");
+  STRCMP_EQUAL("\x1b[31m[CRIT][mygr]: and you\x1b[0m", buf);
 }
 
 TEST(trace, change_levels)
@@ -265,9 +269,12 @@ TEST(trace, change_levels)
   
 }
 
-TEST(trace, active_level_debug)
+TEST(trace, active_level_silly)
 {
-  mbed_trace_config_set(TRACE_ACTIVE_LEVEL_DEBUG);
+  mbed_trace_config_set(TRACE_ACTIVE_LEVEL_SILLY);
+
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
+  STRCMP_EQUAL("[SILL][mygr]: hoi", buf);
   
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
   STRCMP_EQUAL("[DBG ][mygr]: hep", buf);
@@ -280,12 +287,41 @@ TEST(trace, active_level_debug)
   
   mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "o'ou");
   STRCMP_EQUAL("[ERR ][mygr]: o'ou", buf);
+
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "damn");
+  STRCMP_EQUAL("[CRIT][mygr]: damn", buf);
+}
+
+TEST(trace, active_level_debug)
+{
+  mbed_trace_config_set(TRACE_ACTIVE_LEVEL_DEBUG);
+
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
+  STRCMP_EQUAL("", mbed_trace_last());
+  
+  mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
+  STRCMP_EQUAL("[DBG ][mygr]: hep", buf);
+  
+  mbed_tracef(TRACE_LEVEL_INFO, "mygr", "test");
+  STRCMP_EQUAL("[INFO][mygr]: test", buf);
+  
+  mbed_tracef(TRACE_LEVEL_WARN, "mygr", "hups");
+  STRCMP_EQUAL("[WARN][mygr]: hups", buf);
+  
+  mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "o'ou");
+  STRCMP_EQUAL("[ERR ][mygr]: o'ou", buf);
+
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "damn");
+  STRCMP_EQUAL("[CRIT][mygr]: damn", buf);
 }
 
 TEST(trace, active_level_info)
 {
   buf[0] = 0;
   mbed_trace_config_set(TRACE_ACTIVE_LEVEL_INFO);
+
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
+  STRCMP_EQUAL("", mbed_trace_last());
   
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
   STRCMP_EQUAL("", mbed_trace_last());
@@ -298,11 +334,17 @@ TEST(trace, active_level_info)
   
   mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "o'ou");
   STRCMP_EQUAL("[ERR ][mygr]: o'ou", buf);
+
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "damn");
+  STRCMP_EQUAL("[CRIT][mygr]: damn", buf);
 }
 
 TEST(trace, active_level_warn)
 {
   mbed_trace_config_set(TRACE_ACTIVE_LEVEL_WARN);
+
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
+  STRCMP_EQUAL("", mbed_trace_last());
   
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
   STRCMP_EQUAL("", mbed_trace_last());
@@ -315,11 +357,17 @@ TEST(trace, active_level_warn)
   
   mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "o'ou");
   STRCMP_EQUAL("[ERR ][mygr]: o'ou", buf);
+
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "damn");
+  STRCMP_EQUAL("[CRIT][mygr]: damn", buf);
 }
 
 TEST(trace, active_level_error)
 {
   mbed_trace_config_set(TRACE_ACTIVE_LEVEL_ERROR);
+
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
+  STRCMP_EQUAL("", mbed_trace_last());
   
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
   STRCMP_EQUAL("", mbed_trace_last());
@@ -332,10 +380,16 @@ TEST(trace, active_level_error)
   
   mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "o'ou");
   STRCMP_EQUAL("[ERR ][mygr]: o'ou", buf);
+
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "damn");
+  STRCMP_EQUAL("[CRIT][mygr]: damn", buf);
 }
 TEST(trace, active_level_none)
 {
   mbed_trace_config_set(TRACE_ACTIVE_LEVEL_NONE);
+
+  mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
+  STRCMP_EQUAL("", mbed_trace_last());
   
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
   STRCMP_EQUAL("", mbed_trace_last());
@@ -347,6 +401,9 @@ TEST(trace, active_level_none)
   STRCMP_EQUAL("", mbed_trace_last());
   
   mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "o'ou");
+  STRCMP_EQUAL("", mbed_trace_last());
+
+  mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "damn");
   STRCMP_EQUAL("", mbed_trace_last());
 }
 
