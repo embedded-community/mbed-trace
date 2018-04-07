@@ -56,6 +56,7 @@ extern "C" {
 #include "ns_types.h"
 #endif
 
+#include <stdio.h>
 #include <stdarg.h>
 
 #ifndef YOTTA_CFG_MBED_TRACE
@@ -244,6 +245,13 @@ void mbed_trace_suffix_function_set(char* (*suffix_f)(void) );
  */
 void mbed_trace_print_function_set( void (*print_f)(const char*) );
 /**
+ * give file handle where to write trace lines
+ * By default it points to stdout
+ */
+void mbed_trace_set_pipe(FILE *stream);
+
+void mbed_trace_fputs_function_set(int (*fputs_f)(const char *, FILE*));
+/**
  * Set trace print function for tr_cmdline()
  */
 void mbed_trace_cmdprint_function_set( void (*printf)(const char*) );
@@ -391,6 +399,9 @@ char* mbed_trace_array(const uint8_t* buf, uint16_t len);
 #undef mbed_trace_prefix_function_set
 #undef mbed_trace_suffix_function_set
 #undef mbed_trace_print_function_set
+#undef mbed_trace_set_pipe
+#undef mbed_trace_fputs_function_set
+#undef mbed_trace_set_pipe
 #undef mbed_trace_cmdprint_function_set
 #undef mbed_trace_mutex_wait_function_set
 #undef mbed_trace_mutex_release_function_set
@@ -416,6 +427,8 @@ char* mbed_trace_array(const uint8_t* buf, uint16_t len);
 #define mbed_trace_prefix_function_set(...)         ((void) 0)
 #define mbed_trace_suffix_function_set(...)         ((void) 0)
 #define mbed_trace_print_function_set(...)          ((void) 0)
+#define mbed_trace_set_pipe(...)                    ((void) 0)
+#define mbed_trace_fputs_function_set(...)          ((void) 0)
 #define mbed_trace_cmdprint_function_set(...)       ((void) 0)
 #define mbed_trace_mutex_wait_function_set(...)     ((void) 0)
 #define mbed_trace_mutex_release_function_set(...)  ((void) 0)
