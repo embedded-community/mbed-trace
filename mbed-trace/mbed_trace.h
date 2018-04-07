@@ -81,50 +81,50 @@ extern "C" {
     and 5 lower bits are trace level configuration */
 
 /** Config mask */
-#define TRACE_MASK_CONFIG         0xE0
+#define TRACE_MASK_CONFIG         0xF0
 /** Trace level mask */
-#define TRACE_MASK_LEVEL          0x7F
+#define TRACE_MASK_LEVEL          0x0F
 
 /** plain trace data instead of "headers" */
-#define TRACE_MODE_PLAIN          0x400
+#define TRACE_MODE_PLAIN          0x40
 /** color mode */
-#define TRACE_MODE_COLOR          0x200
+#define TRACE_MODE_COLOR          0x20
 /** Use print CR before trace line */
-#define TRACE_CARRIAGE_RETURN     0x100
-
-/** used to activate all trace levels */
-#define TRACE_ACTIVE_LEVEL_ALL    0x7F
-/** print all traces same as above */
-#define TRACE_ACTIVE_LEVEL_SILLY  0x7f
-/** print debug,warn, error and critical traces */
-#define TRACE_ACTIVE_LEVEL_DEBUG  0x3f
-/** print info, warn, error and critical traces */
-#define TRACE_ACTIVE_LEVEL_INFO   0x1f
-/** print warn, error and critical traces */
-#define TRACE_ACTIVE_LEVEL_WARN   0x0f
-/** print error and critical trace */
-#define TRACE_ACTIVE_LEVEL_ERROR  0x07
-/** print only critical trace */
-#define TRACE_ACTIVE_LEVEL_CRITICAL  0x03
-/** print only cmd line data */
-#define TRACE_ACTIVE_LEVEL_CMD    0x01
-/** trace nothing  */
-#define TRACE_ACTIVE_LEVEL_NONE   0x00
+#define TRACE_CARRIAGE_RETURN     0x10
 
 /** this print is some silly deep information for debug purpose */
-#define TRACE_LEVEL_SILLY         0x40
+#define TRACE_LEVEL_SILLY         0x07
 /** this print is some deep information for debug purpose */
-#define TRACE_LEVEL_DEBUG         0x20
+#define TRACE_LEVEL_DEBUG         0x06
 /** Info print, for general purpose prints */
-#define TRACE_LEVEL_INFO          0x10
+#define TRACE_LEVEL_INFO          0x05
 /** warning prints, which shouldn't causes any huge problems */
-#define TRACE_LEVEL_WARN          0x08
+#define TRACE_LEVEL_WARN          0x04
 /** Error prints, which causes probably problems, e.g. out of mem. */
-#define TRACE_LEVEL_ERROR         0x04
+#define TRACE_LEVEL_ERROR         0x03
 /** Critical prints, which causes critical problems */
 #define TRACE_LEVEL_CRITICAL      0x02
 /** special level for cmdline. Behaviours like "plain mode" */
 #define TRACE_LEVEL_CMD           0x01
+
+/** used to activate all trace levels */
+#define TRACE_ACTIVE_LEVEL_ALL    TRACE_LEVEL_SILLY
+/** print all traces same as above */
+#define TRACE_ACTIVE_LEVEL_SILLY  TRACE_LEVEL_SILLY
+/** print debug,warn, error and critical traces */
+#define TRACE_ACTIVE_LEVEL_DEBUG  TRACE_LEVEL_DEBUG
+/** print info, warn, error and critical traces */
+#define TRACE_ACTIVE_LEVEL_INFO   TRACE_LEVEL_INFO
+/** print warn, error and critical traces */
+#define TRACE_ACTIVE_LEVEL_WARN   TRACE_LEVEL_WARN
+/** print error and critical trace */
+#define TRACE_ACTIVE_LEVEL_ERROR  TRACE_LEVEL_ERROR
+/** print only critical trace */
+#define TRACE_ACTIVE_LEVEL_CRITICAL  TRACE_LEVEL_CRITICAL
+/** print only cmd line data */
+#define TRACE_ACTIVE_LEVEL_CMD    TRACE_LEVEL_CMD
+/** trace nothing  */
+#define TRACE_ACTIVE_LEVEL_NONE   0x00
 
 #ifndef MBED_TRACE_MAX_LEVEL
 #define MBED_TRACE_MAX_LEVEL TRACE_LEVEL_CRITICAL
@@ -237,11 +237,11 @@ void mbed_trace_buffer_sizes(int lineLength, int tmpLength);
  *  mbed_trace_config_set( TRACE_ACTIVE_LEVEL_ALL|TRACE_MODE_COLOR );
  * @endcode
  */
-void mbed_trace_config_set(uint16_t config);
+void mbed_trace_config_set(uint8_t config);
 /** get trace configurations
  * @return trace configuration byte
  */
-uint16_t mbed_trace_config_get(void);
+uint8_t mbed_trace_config_get(void);
 /**
  * Set trace prefix function
  * pref_f -function return string with null terminated

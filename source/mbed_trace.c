@@ -101,7 +101,7 @@ static void mbed_trace_reset_tmp(void);
 
 typedef struct trace_s {
     /** trace configuration bits */
-    uint16_t trace_config;
+    uint8_t trace_config;
     /** exclude filters list, related group name */
     char *filters_exclude;
     /** include filters list, related group name */
@@ -227,11 +227,11 @@ void mbed_trace_buffer_sizes(int lineLength, int tmpLength)
         mbed_trace_reset_tmp();
     }
 }
-void mbed_trace_config_set(uint16_t config)
+void mbed_trace_config_set(uint8_t config)
 {
     m_trace.trace_config = config;
 }
-uint16_t mbed_trace_config_get(void)
+uint8_t mbed_trace_config_get(void)
 {
     return m_trace.trace_config;
 }
@@ -331,7 +331,7 @@ void mbed_vtracef(uint8_t dlevel, const char* grp, const char *fmt, va_list ap)
         mbed_trace_reset_tmp();
         goto end;
     }
-    if ((m_trace.trace_config & TRACE_MASK_LEVEL) &  dlevel) {
+    if ((m_trace.trace_config & TRACE_MASK_LEVEL) >=  dlevel) {
         bool color = (m_trace.trace_config & TRACE_MODE_COLOR) != 0;
         bool plain = (m_trace.trace_config & TRACE_MODE_PLAIN) != 0;
         bool cr    = (m_trace.trace_config & TRACE_CARRIAGE_RETURN) != 0;
