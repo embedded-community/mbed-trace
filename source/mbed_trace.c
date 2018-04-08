@@ -94,6 +94,7 @@
 
 /** default print function, just redirect str to printf */
 static void mbed_trace_realloc( char **buffer, int *length_ptr, int new_length);
+static int mbed_trace_default_fputs(const char* input, FILE* _);
 static void mbed_trace_reset_tmp(void);
 
 typedef struct trace_s {
@@ -252,9 +253,9 @@ static int mbed_trace_default_fputs(const char* input, FILE* _)
     if (m_trace.puts)
     {
         m_trace.puts(input);
-        return strlen(input);
+        return 0;
     }
-    return -1;
+    return EOF; // missing user defined puts function
 }
 void mbed_trace_print_function_set(void (*puts_f)(const char *))
 {
@@ -267,7 +268,7 @@ void mbed_trace_set_pipe(FILE *stream)
 }
 void mbed_trace_fputs_function_set(int (*fputs_f)(const char *, FILE*))
 {
-    m_trace.fputs = fputs_f;
+    m_trace.fputs = fputs_f ? fputs_f : mbed_trace_default_fputs;
 }
 void mbed_trace_cmdprint_function_set(void (*printf)(const char *))
 {
@@ -492,7 +493,7 @@ void mbed_vtracef(uint8_t dlevel, const char* grp, const char *fmt, va_list ap)
                 // add line feeds when using stdio:fputs streaming.
                 // by default we use custom fputs which behaviours same way than puts
                 // @todo this is a bit hack solution
-                retval = snprintf(ptr, bLeft, "\n");
+                snprintf(ptr, bLeft, "\n");
             }
             //print out whole data
             m_trace.fputs(m_trace.line, m_trace.stream);

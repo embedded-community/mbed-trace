@@ -245,11 +245,15 @@ void mbed_trace_suffix_function_set(char* (*suffix_f)(void) );
  */
 void mbed_trace_print_function_set( void (*print_f)(const char*) );
 /**
- * give file handle where to write trace lines
+ * Set FILE handle where to write trace lines
  * By default it points to stdout
+ * When null is given default pipe (stdout) is used
  */
 void mbed_trace_set_pipe(FILE *stream);
-
+/**
+ * Set fputs -like function
+ * When null is given print function is in use (mbed_trace_print_function_set)
+ */
 void mbed_trace_fputs_function_set(int (*fputs_f)(const char *, FILE*));
 /**
  * Set trace print function for tr_cmdline()
