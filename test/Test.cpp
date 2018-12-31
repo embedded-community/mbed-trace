@@ -255,7 +255,7 @@ TEST(trace, active_level_all_color)
     mbed_tracef(TRACE_LEVEL_ERROR, "mygr", "even you");
     STRCMP_EQUAL("\x1b[31m[ERR ][mygr]: even you\x1b[0m", buf);
     mbed_tracef(TRACE_LEVEL_CRITICAL, "mygr", "and you");
-    STRCMP_EQUAL("\x1b[31m[CRIT][mygr]: and you\x1b[0m", buf);
+    STRCMP_EQUAL("\x1b[41m[CRIT][mygr]: and you\x1b[0m", buf);
 }
 
 TEST(trace, change_levels)
