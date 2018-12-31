@@ -134,6 +134,7 @@ typedef struct trace_s {
     void (*mutex_release_f)(void);
     /** number of times the mutex has been locked */
     int mutex_lock_count;
+    unsigned long int wr_bytes;
 } trace_t;
 
 static trace_t m_trace = {
@@ -149,7 +150,7 @@ static trace_t m_trace = {
     .suffix_f = 0,
     .stream = 0,
     .puts = 0,
-    .fputs  = fputs,
+    .fputs  = 0,
     .cmd_printf = 0,
     .mutex_wait_f = 0,
     .mutex_release_f = 0,
@@ -165,8 +166,10 @@ int mbed_trace_init(void)
     if (m_trace.tmp_data == NULL) {
         m_trace.tmp_data = MBED_TRACE_MEM_ALLOC(m_trace.tmp_data_length);
     }
+    m_trace.trace_config = DEFAULT_TRACE_CONFIG;
     m_trace.tmp_data_ptr = m_trace.tmp_data;
     m_trace.stream = stdout;
+    m_trace.fputs = fputs;
 
     if (m_trace.filters_exclude == NULL) {
         m_trace.filters_exclude = MBED_TRACE_MEM_ALLOC(m_trace.filters_length);
@@ -265,6 +268,7 @@ void mbed_trace_print_function_set(void (*puts_f)(const char *))
 void mbed_trace_set_pipe(FILE *stream)
 {
     m_trace.stream = stream ? stream : stdout;
+    //m_trace.wr_bytes = ftell(m_trace.stream);
 }
 void mbed_trace_fputs_function_set(int (*fputs_f)(const char *, FILE*))
 {
@@ -495,8 +499,11 @@ void mbed_vtracef(uint8_t dlevel, const char* grp, const char *fmt, va_list ap)
                 // @todo this is a bit hack solution
                 snprintf(ptr, bLeft, "\n");
             }
-            //print out whole data
+            //print out whole data to the writable stream
+            //retval = 
             m_trace.fputs(m_trace.line, m_trace.stream);
+            //if (retval < 0)
+            //{ // stream write error happened. what we could do? }
         }
         //return tmp data pointer back to the beginning
         mbed_trace_reset_tmp();

@@ -50,7 +50,7 @@ TEST_GROUP(trace)
 {
   void setup()
   {
-
+    buf[0] = 0;
     mbed_trace_init();
     mbed_trace_config_set(TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_ALL);
     mbed_trace_print_function_set( myprint );
@@ -164,7 +164,10 @@ TEST(trace, PreInitConfiguration)
     mbed_trace_buffer_sizes(11, 10);
     mbed_trace_mutex_wait_function_set( my_mutex_wait );
     mbed_trace_mutex_release_function_set( my_mutex_release );
+    
     mbed_trace_init();
+    mbed_trace_config_set(TRACE_MODE_PLAIN|TRACE_ACTIVE_LEVEL_ALL);
+    mbed_trace_print_function_set( myprint );
 
     STRCMP_EQUAL("30:30:30*", mbed_trace_array(arr, 20));
 
@@ -284,7 +287,6 @@ TEST(trace, active_level_debug)
 
 TEST(trace, active_level_info)
 {
-  buf[0] = 0;
   mbed_trace_config_set(TRACE_ACTIVE_LEVEL_INFO);
   
   mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
@@ -456,7 +458,6 @@ TEST(trace, filters_control)
 }
 TEST(trace, cmd_printer)
 {
-  buf[0] = 0;
   mbed_trace_config_set(TRACE_ACTIVE_LEVEL_ALL);
   mbed_tracef(TRACE_LEVEL_CMD, "mygr", "default printer");
   STRCMP_EQUAL("default printer", buf);
@@ -482,8 +483,34 @@ TEST(trace, filestream)
     mbed_trace_fputs_function_set(fputs);
     mbed_trace_set_pipe(fd);
     mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hello");
-    CHECK(ftell(fd) == 20);
+    CHECK_EQUAL(ftell(fd), 20);
     fclose(fd);
+}
+TEST(trace, stream_closed)
+{
+    mbed_trace_config_set(TRACE_ACTIVE_LEVEL_ALL);
+    FILE* fd = fopen("./test.log", "w");
+    CHECK(fd);
+    mbed_trace_fputs_function_set(fputs);
+    mbed_trace_set_pipe(fd);
+    mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hello");
+    CHECK_EQUAL(ftell(fd), 20);
+    fclose(fd);
+    CHECK_EQUAL(ftell(fd), EOF);
+    // doesn't crash after FILE is closed
+    mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hello");
+}
+TEST(trace, switch_stream)
+{
+    mbed_trace_config_set(TRACE_ACTIVE_LEVEL_ALL);
+    FILE* fd = fopen("./test.log", "w");
+    CHECK(fd);
+    mbed_trace_fputs_function_set(fputs);
+    mbed_trace_set_pipe(fd);
+    mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hello");
+    CHECK_EQUAL(ftell(fd), 20);
+    fclose(fd);
+    STRCMP_EQUAL("", buf);
     mbed_trace_print_function_set(myprint);
     mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hello");
     STRCMP_EQUAL("[DBG ][mygr]: hello", buf);
