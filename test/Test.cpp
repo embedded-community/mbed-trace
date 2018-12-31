@@ -282,7 +282,7 @@ TEST(trace, active_level_silly)
     STRCMP_EQUAL("[SILL][mygr]: hoi", buf);
 
     // unknown debug level
-    mbed_tracef(TRACE_LEVEL_DEBUG + 1, "mygr", "hep");
+    mbed_tracef(TRACE_LEVEL_SILLY + 1, "mygr", "hep");
     STRCMP_EQUAL("              hep", buf);
 
     mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
