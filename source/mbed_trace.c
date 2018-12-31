@@ -49,7 +49,7 @@
 #endif
 #endif /* YOTTA_CFG_MEMLIB */
 
-#define VT100_COLOR_CRITICAL "\x1b[31m"
+#define VT100_COLOR_CRITICAL "\x1b[41m"
 #define VT100_COLOR_ERROR "\x1b[31m"
 #define VT100_COLOR_WARN  "\x1b[33m"
 #define VT100_COLOR_INFO  "\x1b[39m"
