@@ -49,12 +49,12 @@ void myprint(const char *str)
 TEST_GROUP(trace)
 {
     void setup() {
-
         mbed_trace_init();
         mbed_trace_config_set(TRACE_MODE_PLAIN | TRACE_ACTIVE_LEVEL_ALL);
         mbed_trace_print_function_set(myprint);
         mbed_trace_mutex_wait_function_set(my_mutex_wait);
         mbed_trace_mutex_release_function_set(my_mutex_release);
+        buf[0] = 0;
     }
     void teardown() {
         CHECK(mutex_wait_count == mutex_release_count); // Check the mutex count with every test
@@ -282,8 +282,9 @@ TEST(trace, active_level_silly)
     STRCMP_EQUAL("[SILL][mygr]: hoi", buf);
 
     // unknown debug level
+    buf[0] = 0;
     mbed_tracef(TRACE_LEVEL_SILLY + 1, "mygr", "hep");
-    STRCMP_EQUAL("              hep", buf);
+    STRCMP_EQUAL("", buf);
 
     mbed_tracef(TRACE_LEVEL_DEBUG, "mygr", "hep");
     STRCMP_EQUAL("[DBG ][mygr]: hep", buf);
@@ -326,7 +327,6 @@ TEST(trace, active_level_debug)
 
 TEST(trace, active_level_info)
 {
-    buf[0] = 0;
     mbed_trace_config_set(TRACE_ACTIVE_LEVEL_INFO);
 
     mbed_tracef(TRACE_LEVEL_SILLY, "mygr", "hoi");
