@@ -166,7 +166,7 @@ extern "C" {
 #endif
 
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_CRITICAL
-#define tr_critical(...)           mbed_tracef(TRACE_LEVEL_CRITICAL,   TRACE_GROUP, __VA_ARGS__)   //!< Print Critical Message
+#define tr_critical(...)         mbed_tracef(TRACE_LEVEL_CRITICAL,   TRACE_GROUP, __VA_ARGS__)   //!< Print Critical Message
 #define tr_crit(...)             mbed_tracef(TRACE_LEVEL_CRITICAL,   TRACE_GROUP, __VA_ARGS__)   //!< Alternative Critical message
 #else
 #define tr_critical(...)
