@@ -306,9 +306,11 @@ static void mbed_trace_default_print(const char *str)
 }
 void mbed_tracef(uint8_t dlevel, const char *grp, const char *fmt, ...)
 {
+    printf("mbed_tracef");
     va_list ap;
     va_start(ap, fmt);
-    mbed_vtracef(dlevel, grp, fmt, ap);
+    printf(fmt, ap);
+    //mbed_vtracef(dlevel, grp, fmt, ap);
     va_end(ap);
 }
 void mbed_vtracef(uint8_t dlevel, const char* grp, const char *fmt, va_list ap)
@@ -502,10 +504,14 @@ const char *mbed_trace_last(void)
     return m_trace.line;
 }
 /* Helping functions */
+const char* NOT_SUPPORTED_STR = "TPnot_supp";
+
 #define tmp_data_left()  m_trace.tmp_data_length-(m_trace.tmp_data_ptr-m_trace.tmp_data)
 #if MBED_CONF_MBED_TRACE_FEA_IPV6 == 1
 char *mbed_trace_ipv6(const void *addr_ptr)
 {
+    // todo needs to link against protoman to get ip6tos
+#ifdef TAPANI_TEMP_DISABLE
     /** Acquire mutex. It is released before returning from mbed_vtracef. */
     if ( m_trace.mutex_wait_f ) {
         m_trace.mutex_wait_f();
@@ -524,9 +530,12 @@ char *mbed_trace_ipv6(const void *addr_ptr)
     str[0] = 0;
     m_trace.tmp_data_ptr += ip6tos(addr_ptr, str) + 1;
     return str;
+#endif
+    return NOT_SUPPORTED_STR;
 }
 char *mbed_trace_ipv6_prefix(const uint8_t *prefix, uint8_t prefix_len)
 {
+#ifdef TAPANI_TEMP_DISABLE
     /** Acquire mutex. It is released before returning from mbed_vtracef. */
     if ( m_trace.mutex_wait_f ) {
         m_trace.mutex_wait_f();
@@ -546,6 +555,8 @@ char *mbed_trace_ipv6_prefix(const uint8_t *prefix, uint8_t prefix_len)
 
     m_trace.tmp_data_ptr += ip6_prefix_tos(prefix, prefix_len, str) + 1;
     return str;
+#endif
+    return NOT_SUPPORTED_STR;
 }
 #endif //MBED_CONF_MBED_TRACE_FEA_IPV6
 char *mbed_trace_array(const uint8_t *buf, uint16_t len)

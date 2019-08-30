@@ -43,8 +43,8 @@
  */
 #ifndef MBED_TRACE_H_
 #define MBED_TRACE_H_
-
-#ifdef __cplusplus
+#include <kernel.h>
+#ifdef __cplusplus  // todo this extern c is in wrong place headers should not be included
 extern "C" {
 #endif
 
@@ -57,6 +57,9 @@ extern "C" {
 #endif
 
 #include <stdarg.h>
+
+// todo add force printf macro here
+#include <stdio.h>
 
 #ifndef YOTTA_CFG_MBED_TRACE
 #define YOTTA_CFG_MBED_TRACE 0
@@ -124,28 +127,35 @@ extern "C" {
 
 //usage macros:
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_DEBUG
-#define tr_debug(...)           mbed_tracef(TRACE_LEVEL_DEBUG,   TRACE_GROUP, __VA_ARGS__)   //!< Print debug message
+//#define tr_debug(...)           mbed_tracef(TRACE_LEVEL_DEBUG,   TRACE_GROUP, __VA_ARGS__)   //!< Print debug message
+#define tr_debug(f_, ...) printf("CycleD:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_debug(...)
 #endif
 
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_INFO
-#define tr_info(...)            mbed_tracef(TRACE_LEVEL_INFO,    TRACE_GROUP, __VA_ARGS__)   //!< Print info message
+//#define tr_info(...)            mbed_tracef(TRACE_LEVEL_INFO,    TRACE_GROUP, __VA_ARGS__)   //!< Print info message
+#define tr_info(f_, ...) printf("CycleI:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_info(...)
 #endif
 
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_WARN
-#define tr_warning(...)         mbed_tracef(TRACE_LEVEL_WARN,    TRACE_GROUP, __VA_ARGS__)   //!< Print warning message
-#define tr_warn(...)            mbed_tracef(TRACE_LEVEL_WARN,    TRACE_GROUP, __VA_ARGS__)   //!< Alternative warning message
+//#define tr_warning(...)         mbed_tracef(TRACE_LEVEL_WARN,    TRACE_GROUP, __VA_ARGS__)   //!< Print warning message
+//#define tr_warn(...)            mbed_tracef(TRACE_LEVEL_WARN,    TRACE_GROUP, __VA_ARGS__)   //!< Alternative warning message
+#define tr_warning(f_, ...) printf("CycleW:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_warn(f_, ...) printf("CycleW:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_warning(...)
 #define tr_warn(...)
 #endif
 
+
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_ERROR
-#define tr_error(...)           mbed_tracef(TRACE_LEVEL_ERROR,   TRACE_GROUP, __VA_ARGS__)   //!< Print Error Message
-#define tr_err(...)             mbed_tracef(TRACE_LEVEL_ERROR,   TRACE_GROUP, __VA_ARGS__)   //!< Alternative error message
+//#define tr_error(...)           mbed_tracef(TRACE_LEVEL_ERROR,   TRACE_GROUP, __VA_ARGS__)   //!< Print Error Message
+//#define tr_err(...)             mbed_tracef(TRACE_LEVEL_ERROR,   TRACE_GROUP, __VA_ARGS__)   //!< Alternative error message
+#define tr_error(f_, ...) printf("Cycle:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_err(f_, ...) printf("Cycle:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_error(...)
 #define tr_err(...)
@@ -376,6 +386,10 @@ char* mbed_trace_array(const uint8_t* buf, uint16_t len);
  * If tracing is disabled, the dummies will hide the real functions. The real functions can still be reached by
  * surrounding the name of the function with brackets, e.g. "(mbed_tracef)(dlevel, grp, "like so");"
  * */
+#ifdef TAPANI_FORCE_TRACE
+#undef mbed_tracef
+#endif
+
 #if defined(FEA_TRACE_SUPPORT) || MBED_CONF_MBED_TRACE_ENABLE || YOTTA_CFG_MBED_TRACE || (defined(YOTTA_CFG) && !defined(NDEBUG))
 // Make sure FEA_TRACE_SUPPORT is always set whenever traces are enabled.
 #ifndef FEA_TRACE_SUPPORT
@@ -424,14 +438,23 @@ char* mbed_trace_array(const uint8_t* buf, uint16_t len);
 #define mbed_trace_include_filters_set(...)         ((void) 0)
 #define mbed_trace_include_filters_get(...)         ((const char *) 0)
 #define mbed_trace_last(...)                        ((const char *) 0)
+#ifndef TAPANI_FORCE_TRACE
 #define mbed_tracef(...)                            ((void) 0)
+#endif
+//#define mbed_tracef(f_, ...) printf((f_), ##__VA_ARGS__)
 #define mbed_vtracef(...)                           ((void) 0)
 /**
  * These helper functions accumulate strings in a buffer that is only flushed by actual trace calls. Using these
  * functions outside trace calls could cause the buffer to overflow.
  */
+#ifndef TAPANI_FORCE_TRACE
 #define mbed_trace_ipv6(...)                dont_use_trace_helpers_outside_trace_calls
 #define mbed_trace_ipv6_prefix(...)         dont_use_trace_helpers_outside_trace_calls
 #define mbed_trace_array(...)               dont_use_trace_helpers_outside_trace_calls
+#else
+#define mbed_trace_ipv6(...)                ((const char *) 0)
+#define mbed_trace_ipv6_prefix(...)         ((const char *) 0)
+#define mbed_trace_array(...)               ((const char *) 0)
+#endif
 
 #endif /* FEA_TRACE_SUPPORT */
