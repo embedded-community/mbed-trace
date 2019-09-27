@@ -17,5 +17,5 @@ add_library(mbedTrace "${MBED_TRACE_SRC}" "")
 
 target_include_directories(mbedTrace PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/mbed-trace/)
 
-add_dependencies(mbedTrace zephyr_interface)
-target_link_libraries(mbedTrace zephyr_interface)
+#add_dependencies(mbedTrace zephyr_interface)
+#target_link_libraries(mbedTrace zephyr_interface)

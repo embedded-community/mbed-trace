@@ -43,7 +43,6 @@
  */
 #ifndef MBED_TRACE_H_
 #define MBED_TRACE_H_
-#include <kernel.h>
 #ifdef __cplusplus  // todo this extern c is in wrong place headers should not be included
 extern "C" {
 #endif
@@ -125,17 +124,18 @@ extern "C" {
 #define MBED_TRACE_MAX_LEVEL TRACE_LEVEL_DEBUG
 #endif
 
+#define GETTIME() 42
 //usage macros:
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_DEBUG
 //#define tr_debug(...)           mbed_tracef(TRACE_LEVEL_DEBUG,   TRACE_GROUP, __VA_ARGS__)   //!< Print debug message
-#define tr_debug(f_, ...) printf("CycleD:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_debug(f_, ...) printf("CycleD:%u %s:%u ",GETTIME()  , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_debug(...)
 #endif
 
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_INFO
 //#define tr_info(...)            mbed_tracef(TRACE_LEVEL_INFO,    TRACE_GROUP, __VA_ARGS__)   //!< Print info message
-#define tr_info(f_, ...) printf("CycleI:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_info(f_, ...) printf("CycleI:%u %s:%u ",GETTIME()  , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_info(...)
 #endif
@@ -143,8 +143,8 @@ extern "C" {
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_WARN
 //#define tr_warning(...)         mbed_tracef(TRACE_LEVEL_WARN,    TRACE_GROUP, __VA_ARGS__)   //!< Print warning message
 //#define tr_warn(...)            mbed_tracef(TRACE_LEVEL_WARN,    TRACE_GROUP, __VA_ARGS__)   //!< Alternative warning message
-#define tr_warning(f_, ...) printf("CycleW:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
-#define tr_warn(f_, ...) printf("CycleW:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_warning(f_, ...) printf("CycleW:%u %s:%u ",GETTIME()  , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_warn(f_, ...) printf("CycleW:%u %s:%u ",GETTIME()  , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_warning(...)
 #define tr_warn(...)
@@ -154,8 +154,8 @@ extern "C" {
 #if MBED_TRACE_MAX_LEVEL >= TRACE_LEVEL_ERROR
 //#define tr_error(...)           mbed_tracef(TRACE_LEVEL_ERROR,   TRACE_GROUP, __VA_ARGS__)   //!< Print Error Message
 //#define tr_err(...)             mbed_tracef(TRACE_LEVEL_ERROR,   TRACE_GROUP, __VA_ARGS__)   //!< Alternative error message
-#define tr_error(f_, ...) printf("Cycle:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
-#define tr_err(f_, ...) printf("Cycle:%u %s:%u ",k_cycle_get_32() , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_error(f_, ...) printf("Cycle:%u %s:%u ",GETTIME()  , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
+#define tr_err(f_, ...) printf("Cycle:%u %s:%u ",GETTIME()  , __func__, __LINE__);printf((f_), ##__VA_ARGS__);printf("\n");
 #else
 #define tr_error(...)
 #define tr_err(...)
