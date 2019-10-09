@@ -556,7 +556,8 @@ char *mbed_trace_array(const uint8_t *buf, uint16_t len)
         m_trace.mutex_wait_f();
         m_trace.mutex_lock_count++;
     }
-    int i, bLeft = tmp_data_left();
+    int i;
+    size_t bLeft = tmp_data_left();
     char *str, *wptr;
     str = m_trace.tmp_data_ptr;
     if (len == 0 || str == NULL || bLeft == 0) {
